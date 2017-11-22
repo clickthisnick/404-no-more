@@ -1,0 +1,31 @@
+{
+  "name": "404-no-more",
+  "version": "1.0.0",
+  "description": "Breadth First Search Scan Of A Website Which Clicks All Links And Checks For 404s",
+  "main": "index.js",
+  "scripts": {
+    "test": "node_modules/ts-node/dist/bin.js index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clickthisnick/404-no-more.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/clickthisnick/404-no-more/issues"
+  },
+  "homepage": "https://github.com/clickthisnick/404-no-more#readme",
+  "dependencies": {
+    "@types/puppeteer": "^0.13.2",
+    "@types/request": "^2.0.8",
+    "@types/request-promise": "^4.1.39",
+    "puppeteer": "^0.13.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "yargs": "^10.0.3"
+  }
+}
