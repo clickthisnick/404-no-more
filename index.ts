@@ -8,6 +8,8 @@ interface ILink {
   href: string;
 }
 
+const badStatusLinks: string[] = [];
+
 function delay(timeout) {
   return new Promise((resolve) => {
     setTimeout(resolve, timeout);
@@ -19,7 +21,8 @@ if (argv.host === undefined || argv.url === undefined) {
 }
 
 async function getNewLinks(
-  page: Page, linkMap: {[s: string]: ILink},
+  page: Page,
+  linkMap: {[s: string]: ILink},
   unvisitedLinks: string[],
   hostname: string
 ) {
@@ -79,11 +82,7 @@ async function getNewLinks(
     const link = unvisitedLinks[0];
 
     // Headless puppeteer cannot navigate to pdfs
-    let redirectsToPDF = false;
-
-    if (argv.debug) {
-        console.log(`Unvisited Links: ${unvisitedLinks.length} - ${link}`);
-    }
+    let thisLinkIsPDF = false;
 
     try {
       const xhr = await rp({
@@ -106,14 +105,14 @@ async function getNewLinks(
 
       // Sometimes websites have a cdn link that actually points to a pdf
       // puppeteer cannot navigate to pdfs so we should omit that link from the goTo step
-      redirectsToPDF = xhr.request.path.split('?')[0].endsWith('.pdf');
+      thisLinkIsPDF = xhr.request.path.split('?')[0].endsWith('.pdf');
 
       if (![200, 999].includes(xhr.statusCode)) {
-        console.log(`Status Code ${xhr.statusCode}\n${link}\nFound on page: ${linkMap[link].baseURI}\n`);
+        badStatusLinks.push(`Status Code ${xhr.statusCode}\n${link}\nFound on page: ${linkMap[link].baseURI}\n`);
       }
     } catch(e) {
-      console.log(`Request Promise: ${link}`);
-      console.log(e);
+      // console.log(`Request Promise: ${link}`);
+      // console.log(e);
     }
 
     const page = await browser.newPage();
@@ -123,14 +122,36 @@ async function getNewLinks(
       // puppeteer headless cannot navigate to pdfs
       // https://github.com/GoogleChrome/puppeteer/issues/830
       !link.split('?')[0].endsWith('.pdf') &&
-      !redirectsToPDF
+      !thisLinkIsPDF
     ) {
       // Go to the first unvisited url only if in host
       try {
+        if (argv.debug) {
+            let debugLink = link;
+
+            if (link.includes('?')) {
+              debugLink = link.split('?')[0];
+            }
+            process.stdout.write(`Unvisited Links: ${unvisitedLinks.length} - ${debugLink} `);
+        }
+
         await page.goto(link, {timeout});
 
         // This is a courtesy so we aren't ddosing a website
         await delay(1000);
+
+        const paints = await page.evaluate(_ => {
+          const result = {};
+          performance.getEntries().map(entry => {
+            result[entry.name] = entry.startTime;
+          });
+          return result;
+        });
+
+        if (argv.debug) {
+          process.stdout.write(`- First-Paint: ${Math.round(paints['first-paint'])}ms\n`);
+        }
+
       } catch(e) {
         console.log(`Page goto: ${link}`);
         console.log(e);
@@ -153,6 +174,11 @@ async function getNewLinks(
   }
 
   console.log('Done Scanning!');
+  console.log('Bad Status Links:');
+
+  for (const link of badStatusLinks) {
+    console.log(link);
+  }
 
   await browser.close();
 })();
