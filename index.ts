@@ -1,5 +1,5 @@
 import { launch, Page } from 'puppeteer';
-import * as rp from 'request-promise';
+import * as rp from 'request-promise-native';
 import { argv } from 'yargs';
 
 interface ILink {
@@ -108,7 +108,13 @@ async function getNewLinks(
       thisLinkIsPDF = xhr.request.path.split('?')[0].endsWith('.pdf');
 
       if (![200, 999].includes(xhr.statusCode)) {
-        badStatusLinks.push(`Status Code ${xhr.statusCode}\n${link}\nFound on page: ${linkMap[link].baseURI}\n`);
+        const badLink = `Status Code ${xhr.statusCode}\n${link}\nFound on page: ${linkMap[link].baseURI}\n`;
+
+        if (argv.debug) {
+          console.log(badLink);
+        }
+        
+        badStatusLinks.push(badLink);
       }
     } catch(e) {
       // console.log(`Request Promise: ${link}`);
