@@ -21,7 +21,7 @@
     "@types/request": "^2.0.8",
     "@types/request-promise": "^4.1.39",
     "puppeteer": "^0.13.0",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
