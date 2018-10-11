@@ -5,7 +5,7 @@ Breadth first search scan of a website which loads all links within the host and
 
 `npm install`
 
-`npm test -- --url=http://www.clickthisnick.com --host=clickthisnick.com`
+`npm test -- --url=http://www.clickthisnick.com --host=clickthisnick.com --debug=true`
 
 ## License
 
