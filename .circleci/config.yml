@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    environment:
+      - TZ: "/usr/share/zoneinfo/GMT"
+
+    docker:
+      - image: circleci/node:6.10.3
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
