@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/clickthisnick/404-no-more#readme",
   "dependencies": {
-    "@types/puppeteer": "^1.6.4",
+    "@types/puppeteer": "^2.0.0",
     "@types/request": "^2.47.1",
     "@types/request-promise-native": "^1.0.15",
     "puppeteer": "^1.8.0",
