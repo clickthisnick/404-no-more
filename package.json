@@ -20,7 +20,7 @@
     "@types/puppeteer": "^1.6.4",
     "@types/request": "^2.47.1",
     "@types/request-promise-native": "^1.0.15",
-    "puppeteer": "^1.8.0",
+    "puppeteer": "^2.1.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "ts-node": "^7.0.1",
